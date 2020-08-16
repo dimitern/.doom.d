@@ -20,9 +20,14 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 
-(setq doom-font "Input Mono Narrow-10.5"
-      doom-variable-pitch-font "Input Sans-10.5"
-      doom-big-font "Input Mono Light-16")
+;; default font size smaller on linux, larger on mac.
+(setq-default dimitern/font-size 11)
+(when IS-LINUX (setq dimitern/font-size 10.5))
+(when IS-MAC (setq dimitern/font-size 12))
+
+(setq doom-font (font-spec :family "Input Mono" :size dimitern/font-size)
+      doom-variable-pitch-font (font-spec :family "Input Sans" :size dimitern/font-size)
+      doom-big-font (font-spec :family "Input Mono" :size 16))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -67,6 +72,7 @@
   (add-hook 'python-mode-hook
             (lambda ()
               (modify-syntax-entry ?_ "w")
+              (subword-mode)
               (anaconda-eldoc-mode 1)
               (anaconda-mode 1))))
 
@@ -79,11 +85,13 @@
       [S-left]  #'windmode-left
       [S-right] #'windmove-right)
 
-;; Remap ctrl+left/right to skip words as ctrl+up/down does paragraphs.
-(map! :after smartparens
-      :map smartparens-mode-map
-      [C-left]  #'backward-to-word
-      [C-right] #'forward-to-word)
+;; add default docsets for +lookup/...
+(after! dash-docs
+  (add-to-list 'dash-docs-common-docsets 'Tcl)
+  (add-to-list 'dash-docs-common-docsets 'Python3))
+
+;; disable auto-insertion of paired symbols (parens, quotes, etc.)
+(remove-hook 'doom-first-buffer-hook #'smartparens-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
