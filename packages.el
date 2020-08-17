@@ -5,8 +5,14 @@
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
 
+;; windmove: move between windows easily.
 (package! windmove)
+
+;; anaconda-mode: company completion backend for Python.
 (package! anaconda-mode)
+
+;; focus-autosave-mode: save buffers on focus loss.
+(package! focus-autosave-mode)
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)

@@ -90,8 +90,12 @@
   (add-to-list 'dash-docs-common-docsets 'Tcl)
   (add-to-list 'dash-docs-common-docsets 'Python3))
 
-;; disable auto-insertion of paired symbols (parens, quotes, etc.)
-(remove-hook 'doom-first-buffer-hook #'smartparens-mode)
+;; Disable automatic insertion of parenthesis/quote pairs.
+(remove-hook 'doom-first-buffer-hook #'smartparens-global-mode)
+
+;; focus-autosave-mode: save buffers on focus loss.
+(after! frame
+  (focus-autosave-mode t))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
