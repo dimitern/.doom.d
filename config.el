@@ -25,14 +25,14 @@
 (when IS-LINUX (setq dimitern/font-size 10.5))
 (when IS-MAC (setq dimitern/font-size 12))
 
-(setq doom-font (font-spec :family "Input Mono Light" :size dimitern/font-size)
+(setq doom-font (font-spec :family "Input Mono" :style "Light" :size dimitern/font-size)
       doom-variable-pitch-font (font-spec :family "Input Sans" :size dimitern/font-size)
-      doom-big-font (font-spec :family "Input Mono Light" :size 16))
+      doom-big-font (font-spec :family "Input Mono" :style "Light" :size 16))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-vibrant)
+(setq-default doom-theme 'doom-vibrant)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -65,6 +65,7 @@
 ;; Use python-flake8 as default flycheck checker.
 (after! flycheck
   (setq-default
+   flycheck-flake8-maximum-line-length 100
    flycheck-disabled-checkers '(python-pylint python-mypy)))
 
 ;; Treat underscores as word delimiters.
