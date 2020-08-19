@@ -25,9 +25,9 @@
 (when IS-LINUX (setq dimitern/font-size 10.5))
 (when IS-MAC (setq dimitern/font-size 12))
 
-(setq doom-font (font-spec :family "Input Mono" :size dimitern/font-size)
+(setq doom-font (font-spec :family "Input Mono Light" :size dimitern/font-size)
       doom-variable-pitch-font (font-spec :family "Input Sans" :size dimitern/font-size)
-      doom-big-font (font-spec :family "Input Mono" :size 16))
+      doom-big-font (font-spec :family "Input Mono Light" :size 16))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
