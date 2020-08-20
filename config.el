@@ -20,14 +20,15 @@
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
 
-;; default font size smaller on linux, larger on mac.
-(setq-default dimitern/font-size 11)
-(when IS-LINUX (setq dimitern/font-size 10.5))
-(when IS-MAC (setq dimitern/font-size 12))
+(when IS-MAC
+  (setq doom-font (font-spec :family "Input Mono" :style "Light" :size 12)
+        doom-variable-pitch-font (font-spec :family "Input Sans" :size 12)
+        doom-big-font (font-spec :family "Input Mono" :style "Light" :size 16)))
 
-(setq doom-font (font-spec :family "Input Mono" :style "Light" :size dimitern/font-size)
-      doom-variable-pitch-font (font-spec :family "Input Sans" :size dimitern/font-size)
-      doom-big-font (font-spec :family "Input Mono" :style "Light" :size 16))
+(when IS-LINUX
+  (setq doom-font (font-spec :family "Input Mono Light" :size 10.5)
+        doom-variable-pitch-font (font-spec :family "Input Sans" :size 11)
+        doom-big-font (font-spec :family "Input Mono Light" :size 16)))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
