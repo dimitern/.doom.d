@@ -14,6 +14,9 @@
 ;; focus-autosave-mode: save buffers on focus loss.
 (package! focus-autosave-mode)
 
+;; blacken: Use black to reformat python buffers
+(package! blacken)
+
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 
