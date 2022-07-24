@@ -49,9 +49,6 @@
   (setq lsp-pyls-plugins-pylint-enabled t)
   (setq lsp-pyls-plugins-autopep8-enabled nil)
   (setq lsp-pyls-plugins-yapf-enabled t)
-  (setq blacken-line-length 120)
-  (setq-default format-all-buffers t)
-  (setq format-all-buffers t)
   (setq lsp-pyls-plugins-flake8-max-line-length 120)
   (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
   (setq lsp-pyls-plugins-jedi-use-pyenv-environment t)
@@ -61,7 +58,7 @@
   (setq lsp-ui-doc-max-height 60))
 
 ;; Persist Emacs’ initial frame position, dimensions and/or full-screen state across sessions
-(when-let (dims (doom-store-get 'last-frame-size))
+(when-let (dims (doom-store-get 'last-frame-size doom-store-location (list '(3911 . 26) 417 121 'maximized)))
   (cl-destructuring-bind ((left . top) width height fullscreen) dims
     (setq initial-frame-alist
           (append initial-frame-alist
@@ -84,23 +81,11 @@
 (after! flycheck
   (setq-default
    flycheck-flake8-maximum-line-length 120
-   flycheck-disabled-checkers '(python-pylint python-mypy)))
+   flycheck-disabled-checkers '(python-pylint python-mypy lsp)))
 
-(add-hook! 'python-mode-hook
-  (lambda ()
-    ;; Treat underscores as word delimiters.
-    (modify-syntax-entry ?_ "w")
-    (subword-mode)
-    (setq fill-column 120)
-    (setq blacken-line-length 120)
-    (setq format-all-buffers t)
-    ;; Prefer using black for automatic code formatting than format-all-mode
-    (blacken-mode t)
-    (format-all-mode -1)
-    (add-hook 'before-save-hook #'py-isort-buffer)
-    (add-hook 'format-all-after-format-functions #'blacken-buffer)
-    (anaconda-eldoc-mode 1)
-    (anaconda-mode 1)))
+(defcustom format-enabled nil
+  "Enable running blacken and isort on save for python-mode"
+  :local t)
 
 ;; Remap shift+arrows to switch windows
 (after! windmove
@@ -126,27 +111,52 @@
 (defun toggle-formatting ()
   "Toggles blacken-mode, and py-sort-buffer before save in the current buffer"
   (interactive)
-  (if format-all-buffers
+  (if format-enabled
       (progn
+        (setq format-enabled nil)
         (blacken-mode -1)
-        (format-all-mode -1)
-        (setq format-all-buffers nil)
-        (remove-hook 'format-all-after-format-functions #'blacken-buffer)
         (remove-hook 'before-save-hook #'py-isort-buffer)
-        (message "Disabled blacken-mode, format-all-mode, and py-isort-buffer hook"))
+        (message "Disabled blacken-mode, and py-isort-buffer hook"))
     (progn
-      (setq blacken-line-length 120)
-      (blacken-mode t)
-      (format-all-mode -1)
-      (setq format-all-buffers t)
-      (add-hook 'format-all-after-format-functions #'blacken-buffer)
+      (setq format-enabled t)
+      (call-interactively 'blacken-mode)
       (add-hook 'before-save-hook #'py-isort-buffer)
-      (message "Enabled blacken-mode, format-all-mode, and py-isort-buffer hook"))))
+      (message "Enabled blacken-mode, and py-isort-buffer hook"))))
 
+(defun reset-formatting ()
+  "Toggles the formatting on save twice."
+  (interactive)
+  (progn
+    (toggle-formatting)
+    (toggle-formatting)))
+
+(defun my-python-hook ()
+  ;; Treat underscores as word delimiters.
+  (modify-syntax-entry ?_ "w")
+  (subword-mode)
+  (anaconda-eldoc-mode 1)
+  (anaconda-mode 1)
+  (flycheck-select-checker 'python-flake8)
+  (set-formatter! 'black "cat") ;; Disable format-all-mode's black formatter using different args.
+  (setq format-enabled nil)
+  (call-interactively 'toggle-formatting)
+  (message "my-python-hook completed"))
+
+(defun my-blacken-hook ()
+  (set (make-local-variable 'fill-column) 120)
+  (set (make-local-variable 'blacken-line-length) 120)
+  (message "my-blacken-hook completed"))
+
+(add-hook 'python-mode-hook #'my-python-hook)
+(add-hook 'blacken-mode-hook #'my-blacken-hook)
 
 (map! :map python-mode-map
       ;; Toggle automatic formatting with black in python
       "C-c t T" 'toggle-formatting
+      ;; Reset formatting (toggle twice).
+      "C-c t R" 'reset-formatting
+      ;; Easier lookup definition (than C-c c d)
+      "M-." '+lookup/definition
       ;; Navigate between references with M-p/
       "M-p" #'occur-prev
       "M-n" #'occur-next)

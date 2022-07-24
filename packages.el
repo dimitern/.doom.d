@@ -17,6 +17,16 @@
 ;; blacken: Use black to reformat python buffers
 (package! blacken)
 
+;; ripgrep: faster grep alternative written in Rust.
+(package! ripgrep)
+(package! rg)
+
+;; lsp-pyright: LSP server for Python (alternative to mspyls).
+;(package! lsp-pyright)
+
+;; gitconfig-mode: handle ~/.gitconfig and similar.
+;(package! gitconfig-mode)
+
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
 
