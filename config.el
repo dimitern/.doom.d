@@ -43,14 +43,18 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
+;; Default fill-column to 120, but make it buffer-local too.
+(make-variable-buffer-local 'fill-column)
+(setq-default fill-column 120)
+
 ;; Set up Python Language Server (pyls) with LSP
 (use-package! lsp
   :init
   (setq lsp-pyls-plugins-pylint-enabled t)
   (setq lsp-pyls-plugins-autopep8-enabled nil)
   (setq lsp-pyls-plugins-yapf-enabled t)
-  (setq lsp-pyls-plugins-flake8-max-line-length 120)
-  (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
+  (setq lsp-pyls-plugins-flake8-max-line-length fill-column)
+  (setq lsp-pyls-plugins-pycodestyle-max-line-length fill-column)
   (setq lsp-pyls-plugins-jedi-use-pyenv-environment t)
   (setq lsp-pyls-plugins-pyflakes-enabled nil)
   (setq lsp-pyls-plugins-pycodestyle-enabled nil)
@@ -80,7 +84,7 @@
 ;; Use python-flake8 as default flycheck checker.
 (after! flycheck
   (setq-default
-   flycheck-flake8-maximum-line-length 120
+   flycheck-flake8-maximum-line-length fill-column
    flycheck-disabled-checkers '(python-pylint python-mypy lsp)))
 
 (defcustom format-enabled nil
@@ -136,8 +140,7 @@
   (message "my-python-hook completed"))
 
 (defun my-blacken-hook ()
-  (set (make-local-variable 'fill-column) 120)
-  (set (make-local-variable 'blacken-line-length) 120)
+  (set (make-local-variable 'blacken-line-length) 'fill)
   (message "my-blacken-hook completed"))
 
 (add-hook 'python-mode-hook #'my-python-hook)
