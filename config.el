@@ -123,13 +123,6 @@
       (add-hook 'before-save-hook #'py-isort-buffer)
       (message "Enabled blacken-mode, and py-isort-buffer hook"))))
 
-(defun reset-formatting ()
-  "Toggles the formatting on save twice."
-  (interactive)
-  (progn
-    (toggle-formatting)
-    (toggle-formatting)))
-
 (defun my-python-hook ()
   ;; Treat underscores as word delimiters.
   (modify-syntax-entry ?_ "w")
@@ -153,8 +146,6 @@
 (map! :map python-mode-map
       ;; Toggle automatic formatting with black in python
       "C-c t T" 'toggle-formatting
-      ;; Reset formatting (toggle twice).
-      "C-c t R" 'reset-formatting
       ;; Easier lookup definition (than C-c c d)
       "M-." '+lookup/definition
       ;; Navigate between references with M-p/
